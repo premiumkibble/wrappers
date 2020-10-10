@@ -1,4 +1,0 @@
-#!/bin/bash
-myHost=$1
-
-curl -s https://cascade.hao.ucar.edu/MacHosts.txt |grep "$myHost"
