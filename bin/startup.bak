@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Set the default python version here (python2 or python3)
+pythonVersion=python2
+
+# Match and link python and pip versions.
+if [ $pythonVersion = "python2" ] ; then
+curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py
+python2 get-pip.py
+rm -f get-pip.py
+pipPackage="python-pip"
+pipVersion=pip2
+else
+pipPackage="python3-pip"
+pipVersion=pip3
+fi
+rm -f /usr/local/bin/python /usr/local/bin/pip
+ln -s /usr/bin/$pythonVersion /usr/local/bin/python
+ln -s /usr/bin/$pipVersion /usr/local/bin/pip
+# Update the package lists.
+apt-get update
+
+# Upgrade installed packages.
+apt-get upgrade -y
+
+# Install other software. Add package names to the end of this list.
+apt-get install -y texlive-humanities
+
+#Install Python packages. Add package names to the end of this list.
+pip install aiotkinter aioresponses
+# Capture the bridge IP address. This ip is only available within the Docker host.
+intIP=`ifconfig eth0 | awk '/ *inet /{print $2}'`
+
+# Print a startup banner.
+clear&&/usr/bin/figlet "Wrappers"|/usr/games/lolcat -a -s 40
+
+# Print the hostname and bridge ip address.
+echo "The hostname is $HOSTNAME"|/usr/games/lolcat -a -s 40
+echo "The external IP is $ip"|/usr/games/lolcat -a -s 40
+echo "The bridge IP is $intIP"|/usr/games/lolcat -a -s 40&&echo
+exit
+
+
+

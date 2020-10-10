@@ -1,0 +1,8 @@
+#!/bin/bash
+ipRange=$1
+declare -a hosts=(`/usr/bin/nmap -sL $ipRange | grep "Nmap scan report" | awk '{print $NF}'|sed 's/[)(]//g'`)
+for i in ${hosts[@]}
+do
+nslookup $i|grep name
+done
+

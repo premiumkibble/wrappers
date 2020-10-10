@@ -1,0 +1,5 @@
+#!/bin/bash
+
+myPort=$1
+
+curl -s "https://isc.sans.edu/services.html" | grep -w "$myPort"
