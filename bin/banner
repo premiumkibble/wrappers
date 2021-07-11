@@ -1,13 +1,15 @@
 #!/bin/bash
 
-# Capture the bridge IP address. This ip is only available within the Docker host.
+### Capture the bridge IP address. This ip is only available within the Docker host.
 intIP=`ifconfig eth0 | awk '/ *inet /{print $2}'`
 
-# Print a startup banner.
 clear
+
+### Uncomment to print a startup banner
+
 #usr/bin/figlet "Wrappers"|/usr/games/lolcat -a -s 40
 
-# Print the hostname and bridge ip address.
+### Print the hostname and bridge ip address.
 echo
 echo "The hostname is $HOSTNAME"|/usr/games/lolcat -a -s 40
 echo "The external IP is $ip"|/usr/games/lolcat -a -s 40
