@@ -1,23 +1,6 @@
 
 #!/bin/bash
 
-# Set the default python version here (python2 or python3)
-pythonVersion=python3
-
-# Match and link python and pip versions.
-rm -f /usr/local/bin/python /usr/local/bin/pip
-if [ $pythonVersion = "python2" ] ; then
-curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py >/dev/null
-python2 get-pip.py > /dev/null
-rm -f get-pip.py
-pipVersion=pip2
-ln -s /usr/local/bin/$pipVersion /usr/local/bin/pip
-else
-pipVersion=pip3
-ln -s /usr/bin/$pipVersion /usr/local/bin/pip
-fi
-ln -s /usr/bin/$pythonVersion /usr/local/bin/python
-
 # Update the package lists.
 apt-get update > /dev/null
 
@@ -25,10 +8,10 @@ apt-get update > /dev/null
 apt-get upgrade -y > /dev/null
 
 # Install other software. Add package names to the end of this list.
-apt-get install -y etherape texlive-humanities xrdp rdesktop xfce4 xfce4-goodies                                           > /dev/null
-
+apt-get install -y sl figlet lolcat texlive-humanities
+sleep 10
 #Install Python packages. Add package names to the end of this list.
-pip install aiotkinter aioresponses                                                                                        >/dev/null
+pip install aiotkinter aioresponses                                  
 # Capture the bridge IP address. This ip is only available within the Docker host.
 intIP=`ifconfig eth0 | awk '/ *inet /{print $2}'`
 
