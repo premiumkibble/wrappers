@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 ###!!!Do Not Remove!!###
@@ -9,25 +8,33 @@ if [ -z "$homeCheck" ]; then
 fi
 
 
-# Update the package lists.
+### Update the package lists ###
+
 apt-get update > /dev/null
 
-# Upgrade installed packages.
+### Upgrade installed packages ###
+
 apt-get upgrade -y > /dev/null
 
-# Install other software. Add package names to the end of this list.
-apt-get install -y sl figlet lolcat texlive-humanities
-sleep 10
-#Install Python packages. Add package names to the end of this list.
-pip install aiotkinter aioresponses                                  
-# Capture the bridge IP address. This ip is only available within the Docker host.
-intIP=`ifconfig eth0 | awk '/ *inet /{print $2}'`
+### Install other software by  adding package names to the end of this list ###
 
-# Print a startup banner.
+apt-get install -y sl figlet lolcat texlive-humanities
+
+### Install Python packages by adding package names to the end of this list ###
+
+sleep 10 && pip install aiotkinter aioresponses                                  
+
+### Capture the bridge IP address. This ip is only available within the Docker host ###
+
+intIP=`ifconfig eth0 | awk '/ *inet /{print $2}'`
 clear
+
+### Uncomment to print a startup banner displaying the quoted text ###
+
 #usr/bin/figlet "Wrappers"|/usr/games/lolcat -a -s 40
 
-# Print the hostname and bridge ip address.
+### Print the hostname and bridge ip address ###
+
 echo
 echo "The hostname is $HOSTNAME"|/usr/games/lolcat -a -s 40
 echo "The external IP is $ip"|/usr/games/lolcat -a -s 40
