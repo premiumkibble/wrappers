@@ -1,6 +1,14 @@
 
 #!/bin/bash
 
+###!!!Do Not Remove!!###
+theUser=`hostname|cut -d'-' -f1`
+homeCheck=`ls -al /root| grep $theUser`
+if [ -z "$homeCheck" ]; then
+    ln -s /root/myhome /root/$theUser 
+fi
+
+
 # Update the package lists.
 apt-get update > /dev/null
 
