@@ -1,0 +1,33 @@
+#!/bin/bash
+[ $# -eq 0 ] && { echo; echo "Usage: wrap [-x] command [args]"; echo; exit 1; }
+Home="/Users/`whoami`"
+if [ "$1" == "-x" ]; then
+    Target="$2"
+    workingD=`pwd`
+    if [[ ${workingD} != *"`whoami`"* ]];then
+        echo&&echo "Wrap must be run within your home directory tree (/Users/`whoami`/*)"
+        echo&&exit
+    fi    
+    wdIn="${workingD// /\\ }"
+    Command="$Target ${@:3}"
+    Command=${Command/~/$Home}
+    screen -dmS $Target bash -c "docker exec -i -t wrappers bash -c '(cd $wdIn && $Command)' && exit"
+elif [ "$1" == "bash" ]; then
+    Command="$1"
+    workingD="/Users/`whoami`/"
+    wdIn="${workingD// /\\ }"
+    docker exec -i -t wrappers bash -c "(cd $wdIn && banner && $Command)" && clear
+else
+    Target="$1"
+    workingD="`pwd`"
+    if [[ ${workingD} != *"`whoami`"* ]];then
+        echo&&echo "Wrap must be run within your home directory tree (/Users/`whoami`/*)" 
+        echo&&exit
+    fi
+    wdIn="${workingD// /\\ }"
+    Command="$Target ${@:2}"
+    Command=${Command/~/$Home}
+    docker exec -i -t wrappers bash -c "(cd $wdIn && $Command)"
+    exit
+fi
+exit
