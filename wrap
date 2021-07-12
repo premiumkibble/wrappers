@@ -13,8 +13,18 @@ if [ "$1" == "-x" ]; then
     Command=${Command/~/$Home}
     screen -dmS $Target bash -c "docker exec -i -t wrappers bash -c '(cd $wdIn && $Command)' && exit"
 elif [ "$1" == "bash" ]; then
+    locCheck=`pwd`
+    if [[ ${locCheck} != *"`whoami`"* ]];then
+        echo&&echo "Wrap must be run within your home directory tree (/Users/`whoami`/*)"
+        echo&&exit
+    fi
     Command="$1"
-    workingD="/Users/`whoami`/"
+    workingD="`pwd|cut -d'/' -f 4-`"
+    if [ -z "$workingD" ]; then
+        workingD="/Users/`whoami`/"
+    else
+        workingD="/Users/`whoami`/$workingD"
+    fi
     wdIn="${workingD// /\\ }"
     docker exec -i -t wrappers bash -c "(cd $wdIn && banner && $Command)" && clear
 else
