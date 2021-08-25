@@ -27,6 +27,21 @@ elif [ "$1" == "bash" ]; then
     fi
     wdIn="${workingD// /\\ }"
     docker exec -i -t wrappers bash -c "(cd $wdIn && banner && $Command)" && clear
+elif [ "$1" == "tcsh" ] || [ "$1" == "csh" ]; then
+    locCheck=`pwd`
+    if [[ ${locCheck} != *"`whoami`"* ]];then
+        echo&&echo "Wrap must be run within your home directory tree (/Users/`whoami`/*)"
+        echo&&exit
+    fi
+    Command="tcsh"
+    workingD="`pwd|cut -d'/' -f 4-`"
+    if [ -z "$workingD" ]; then
+        workingD="/Users/`whoami`/"
+    else
+        workingD="/Users/`whoami`/$workingD"
+    fi
+    wdIn="${workingD// /\\ }"
+    docker exec -i -t wrappers bash -c "(cd $wdIn && banner && $Command)" && clear
 else
     Target="$1"
     workingD="`pwd`"

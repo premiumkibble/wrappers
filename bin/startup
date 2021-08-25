@@ -3,10 +3,10 @@
 ###!!!Do Not Remove!!###
 theUser=`hostname|cut -d'-' -f1`
 homeCheck=`ls -al /root| grep $theUser`
+pkgList="/root/.installPackages"
 if [ -z "$homeCheck" ]; then
-    ln -s /root/myhome /root/$theUser 
+    ln -s /root/myhome /Users/$theUser 
 fi
-
 
 ### Update the package lists ###
 
@@ -16,9 +16,17 @@ apt-get update > /dev/null
 
 apt-get upgrade -y > /dev/null
 
-### Install other software by  adding package names to the end of this list ###
+### Install packages from /root/.installPackages ###
 
-apt-get install -y sl figlet lolcat texlive-humanities
+if [ ! -e "$pkgList" ] ; then
+    touch "$pkgList"
+    echo '### Load packages at startup by adding them here (one per line) ###' >> "$pkgList"
+else
+    pkgTargets="`grep -v '###' /root/.installPackages | tr '\n' ' '`"
+    if [ -n "$pkgTargets" ]; then
+      apt-get install -y $pkgTargets 
+    fi
+fi
 
 ### Install Python packages by adding package names to the end of this list ###
 
@@ -29,9 +37,6 @@ sleep 10 && pip install aiotkinter aioresponses
 intIP=`ifconfig eth0 | awk '/ *inet /{print $2}'`
 clear
 
-### Uncomment to print a startup banner displaying the quoted text ###
-
-#usr/bin/figlet "Wrappers"|/usr/games/lolcat -a -s 40
 
 ### Print the hostname and bridge ip address ###
 
