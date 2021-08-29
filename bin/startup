@@ -4,6 +4,7 @@
 theUser=`hostname|cut -d'-' -f1`
 homeCheck=`ls -al /root| grep $theUser`
 pkgList="/root/.installPackages"
+pipList="/root/.installPip"
 if [ -z "$homeCheck" ]; then
     ln -s /root/myhome /Users/$theUser 
 fi
@@ -20,7 +21,7 @@ apt-get upgrade -y > /dev/null
 
 if [ ! -e "$pkgList" ] ; then
     touch "$pkgList"
-    echo '### Load packages at startup by adding them here (one per line) ###' >> "$pkgList"
+    echo '### Load apt packages at startup by adding them here (one per line) ###' >> "$pkgList"
 else
     pkgTargets="`grep -v '###' /root/.installPackages | tr '\n' ' '`"
     if [ -n "$pkgTargets" ]; then
@@ -28,17 +29,25 @@ else
     fi
 fi
 
-### Install Python packages by adding package names to the end of this list ###
+### Install Python packages from /root/.installPip ###
 
-sleep 10 && pip install aiotkinter aioresponses                                  
+if [ ! -e "$pipList" ] ; then
+    touch "$pipList"
+    echo '### Load Python packages at startup by adding them here (one per line) ###' >> "$pipList"
+else
+    pipTargets="`grep -v '###' /root/.installPip | tr '\n' ' '`"
+    if [ -n "$pipTargets" ]; then
+      sleep 10 && pip install $pipTargets
+    fi
+fi
 
-### Capture the bridge IP address. This ip is only available within the Docker host ###
+### Capture the internal IP address. This ip is only available within the Docker host ###
 
 intIP=`ifconfig eth0 | awk '/ *inet /{print $2}'`
 clear
 
 
-### Print the hostname and bridge ip address ###
+### Print the hostname, external and internal IPs ###
 
 echo
 echo "The hostname is $HOSTNAME"|/usr/games/lolcat -a -s 40
