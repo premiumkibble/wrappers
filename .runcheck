@@ -1,7 +1,7 @@
 #!/bin/bash
-runCheck=`docker ps -a |grep wrappers|grep haocsmt`
-clear
-if [ -z "$runCheck" ] ; then 
+runCheck=`docker ps -a 2>/dev/null | grep wrappers|grep haocsmt`
+wrap clear
+if [ -z "$runCheck" ] ; then
     /usr/local/bin/wrappers 2>/dev/null
 fi
 exit

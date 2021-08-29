@@ -45,45 +45,54 @@ elif [ "$1" == "tcsh" ] || [ "$1" == "csh" ]; then
 elif [ "$1" == "start-edit" ]; then 
     declare -a OPS=(Apt Python Exit)
     declare -a ACTS=(Add/Remove Search/List Cancel)
-    op=""
-    act=""
     bold=$(tput bold)
     normal=$(tput sgr0)
-    echo&&echo "${bold}Select a package type (Apt or Python):${normal}"&&echo
-    select op in "${OPS[@]}"; do
-      [[ -n $op ]] || { echo&&echo "${bold}Invalid selection. Please try again:${normal}"&&echo >&2; continue; }
-      break #
-    done
 
-    if [ "$op" == "Exit" ]; then
-      echo&&exit
-    fi
-
-    echo&&echo "${bold}What to do?${normal}"&&echo
-    select act in "${ACTS[@]}"; do
-      [[ -n $act ]] || { echo&&echo "${bold}Invalid selection. Please try again:${normal}"&&echo >&2; continue; }
-      break #
-    done
-
-    if [ "$act" == "Cancel" ]; then
-      wrap start-edit
-    elif [ "$op" == "Apt" ]; then
-      if [ "$act" == "Search/List" ]; then
-        echo&&echo -n "${bold}Enter a search pattern:${normal} " && read searchPat
-        echo && wrap apt-cache search "$searchPat" \| cut \-d\' \' \-f1 \| more
-        wrap start-edit
-      elif [ "$act" == "Add/Remove" ]; then
-        wrap nano \/root\/.installPackages&&clear
+    get_act()
+    {
+      act=""
+      echo&&echo "${bold}$op package actions: ${normal}"&&echo
+      select act in "${ACTS[@]}"; do
+        [[ -n $act ]] || { echo&&echo "${bold}Invalid selection. Please try again:${normal}"&&echo >&2; continue; }
+        break #
+      done
+      if [ "$act" == "Cancel" ]; then
+        get_opt
       fi
-    else
-      if [ "$act" == "Search/List" ]; then
-        echo&&echo -n "${bold}Enter a search pattern:${normal} " && read searchPat
-        echo && wrap wget \-O \- \-q https\:\/\/pypi.org\/simple\/ \| grep \-i "$searchPat"\|cut \-d'/' \-f3\|more
-        wrap start-edit
-      elif [ "$act" == "Add/Remove" ]; then
-        wrap nano \/root\/.installPip&&clear
+      if [ "$op" == "Apt" ]; then
+        if [ "$act" == "Search/List" ]; then
+          echo&&echo -n "${bold}Enter a search pattern:${normal} " && read searchPat
+          echo && wrap apt-cache search "$searchPat" \| cut \-d\' \' \-f1 \| more
+          get_act
+        elif [ "$act" == "Add/Remove" ]; then
+          wrap nano \/root\/.installPackages&&clear
+        fi
+      else
+        if [ "$act" == "Search/List" ]; then
+          echo&&echo -n "${bold}Enter a search pattern:${normal} " && read searchPat
+          echo && wrap wget \-O \- \-q https\:\/\/pypi.org\/simple\/ \| grep \-i "$searchPat"\|cut \-d'/' \-f3\|more
+          get_act
+        elif [ "$act" == "Add/Remove" ]; then
+          wrap nano \/root\/.installPip&&clear
+        fi
       fi
-    fi
+    }
+
+    get_opt()
+    {
+      opt=""
+      echo&&echo "${bold}Select a package type (Apt or Python):${normal}"&&echo
+      select op in "${OPS[@]}"; do
+        [[ -n $op ]] || { echo&&echo "${bold}Invalid selection. Please try again:${normal}"&&echo >&2; continue; }
+        break #
+      done
+      if [ "$op" == "Exit" ]; then
+        echo&&exit
+      fi
+      get_act
+    }
+
+    get_opt
     exit
 else
     Target="$1"
