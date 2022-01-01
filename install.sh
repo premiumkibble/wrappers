@@ -29,9 +29,9 @@ fi
 cd ..
 chown -R $wrapUser wrappers/ 
 sudo -u $wrapUser mv wrappers/ /Users/$wrapUser/DockerHome/wrappers
-#cd $WorkingD
+cd $WorkingD
 rm -rf /tmp/wrappers
 
-echo&&echo "$runningD can be deleted..."&&echo 
+echo&&echo "The directory $runningD can be deleted..."&&echo 
 echo "To start the container, enter '"wrappers"'."&&echo
 exit
