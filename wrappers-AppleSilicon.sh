@@ -29,7 +29,7 @@ fi
 defaults write ~/Library/Preferences/org.macosforge.xquartz.X11.plist nolisten_tcp -bool false
 xhost + 127.0.0.1 > /dev/null
 echo "wrap: Starting container..."
-docker pull haocsmt/sosi:wrappersM1 && docker run -d --rm --hostname `whoami`-wrappers --name wrappers -w /root/myhome -e ip=$ip -p 127.0.0.1:3389:3389 -e DISPLAY=host.docker.internal:0 -v ~/DockerHome/wrappers:/root -v ~/:/root/myhome -v ~/Dockerhome/wrappers/bin:/usr/local/sbin -i -t haocsmt/sosi:wrappersM1 /bin/bash -c 'startup && /bin/bash || /bin/bash' 
+docker pull archimboldi/sosi:wrappersM1 && docker run -d --rm --hostname `whoami`-wrappers --name wrappers -w /root/myhome -e ip=$ip -p 127.0.0.1:3389:3389 -e DISPLAY=host.docker.internal:0 -v ~/DockerHome/wrappers:/root -v ~/:/root/myhome -v ~/Dockerhome/wrappers/bin:/usr/local/sbin -i -t archimboldi/sosi:wrappersM1 /bin/bash -c 'startup && /bin/bash || /bin/bash' 
 exit
 
 
