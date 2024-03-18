@@ -1,8 +1,16 @@
 #!/bin/bash
 ipRange=$1
 declare -a hosts=(`/usr/bin/nmap -sL $ipRange | grep "Nmap scan report" | awk '{print $NF}'|sed 's/[)(]//g'`)
-for i in ${hosts[@]}
-do
-nslookup $i|grep name
-done
 
+echo
+for i in "${hosts[@]}"
+do
+  dnsName=`nslookup $i|grep name|cut -d'=' -f2|sed 's/\.$//'| tr -d ' '| tr '\n' ' '`
+  if [[ ${dnsName} != *"."* ]]; then
+    :
+  else
+    echo "$i: $dnsName"
+  fi
+done
+echo
+exit
